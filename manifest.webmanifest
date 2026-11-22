@@ -1,31 +1,26 @@
+
 {
-  "id": "./",
-  "name": "SkyPilot 737-800",
+  "id": "/Interflight/",
+  "name": "SkyPilot",
   "short_name": "SkyPilot",
-  "description": "3D Boeing 737-800 Flugsimulator",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
+  "description": "SkyPilot Boeing 737-800 Flight Simulator",
+  "start_url": "/Interflight/",
+  "scope": "/Interflight/",
+  "display": "fullscreen",
   "orientation": "landscape",
-  "background_color": "#071521",
-  "theme_color": "#071521",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "/Interflight/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icon-512.png",
+      "src": "/Interflight/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]
