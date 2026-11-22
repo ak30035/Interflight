@@ -1,0 +1,73 @@
+
+const CACHE_NAME = 'skypilot-offline-v1';
+
+const APP_FILES = [
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './icon.svg'
+];
+
+const ENGINE_FILES = [
+  'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js',
+  'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+
+    for (const url of [...APP_FILES, ...ENGINE_FILES]) {
+      try {
+        await cache.add(url);
+      } catch (error) {
+        console.warn('Laden fehlgeschlagen:', url, error);
+      }
+    }
+
+    await self.skipWaiting();
+  })());
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+
+    await Promise.all(
+      keys.filter(k =>
+        k.startsWith('skypilot-') &&
+        k !== CACHE_NAME
+      ).map(k => caches.delete(k))
+    );
+
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(event.request);
+
+    if (cached) return cached;
+
+    try {
+      const response = await fetch(event.request);
+
+      if (response.ok) {
+        await cache.put(event.request, response.clone());
+      }
+
+      return response;
+    } catch (error) {
+      if (event.request.mode === 'navigate') {
+        const fallback = await cache.match('./index.html');
+        if (fallback) return fallback;
+      }
+
+      throw error;
+    }
+  })());
+});
